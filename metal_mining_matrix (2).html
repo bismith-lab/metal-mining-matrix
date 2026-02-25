@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Metal Mining — Comparison Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --accent: #b8860b;
+    --text: #020617;
+    --muted: #1e293b;
+    --iron: #dc2626;
+    --bauxite: #ea580c;
+    --chromium: #7c3aed;
+    --copper: #2563eb;
+    --manganese: #65a30d;
+    --zinc: #0891b2;
+    --titanium: #475569;
+    --nickel: #16a34a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 4px;
+    color: #1e293b;
+    line-height: 1;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 900px;
+  }
+
+  /* Column headers */
+  thead tr th {
+    padding: 0 6px 16px;
+    text-align: center;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  thead tr th:first-child {
+    text-align: left;
+    width: 140px;
+    color: var(--accent);
+    font-size: 10px;
+  }
+
+  .metal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metal-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 2px solid;
+  }
+
+  .metal-name {
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .metal-vol {
+    font-size: 9px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Rows */
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody td {
+    padding: 14px 6px;
+    text-align: center;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tbody td:first-child {
+    text-align: left;
+    padding-left: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #020617;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Alternating row bg */
+  tbody tr:nth-child(even) td {
+    background: rgba(0,0,0,0.02);
+  }
+
+  /* Cell pill */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .pill-low    { background: rgba(132,204,22,0.15);  color: #84cc16; border: 1px solid rgba(132,204,22,0.3); }
+  .pill-vlow   { background: rgba(34,197,94,0.15);   color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+  .pill-mod    { background: rgba(234,179,8,0.15);   color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+  .pill-modhi  { background: rgba(249,115,22,0.15);  color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+  .pill-high   { background: rgba(239,68,68,0.15);   color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+  .pill-fast   { background: rgba(34,197,94,0.12);   color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+  .pill-med    { background: rgba(234,179,8,0.12);   color: #eab308; border: 1px solid rgba(234,179,8,0.25); }
+  .pill-slow   { background: rgba(239,68,68,0.12);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+  /* Depth badge */
+  .depth {
+    font-size: 10px;
+    color: #020617;
+    opacity: 1;
+    line-height: 1.4;
+  }
+
+  /* Stars */
+  .stars { color: var(--accent); font-size: 11px; letter-spacing: 1px; }
+  .stars-grey { color: #2d3748; }
+
+  /* Countries */
+  .countries {
+    font-size: 10px;
+    color: #020617;
+    opacity: 1;
+    line-height: 1.6;
+  }
+
+  /* LMEL badge */
+  .lmel-badge {
+    background: linear-gradient(135deg, rgba(184,134,11,0.15), rgba(184,134,11,0.05));
+    border: 1px solid rgba(184,134,11,0.4);
+    color: var(--accent);
+    border-radius: 6px;
+    font-size: 9px;
+    padding: 3px 8px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    display: inline-block;
+  }
+
+  .dash { color: var(--border); font-size: 16px; }
+
+  /* Column color accents on hover */
+  .col-iron     { --col: var(--iron); }
+  .col-bauxite  { --col: var(--bauxite); }
+  .col-chrom    { --col: var(--chromium); }
+  .col-copper   { --col: var(--copper); }
+  .col-mangan   { --col: var(--manganese); }
+  .col-zinc     { --col: var(--zinc); }
+  .col-titan    { --col: var(--titanium); }
+  .col-nickel   { --col: var(--nickel); }
+
+  /* Metal header pill color */
+  .mh-iron    { border-color: var(--iron);      background: rgba(220,38,38,0.08); }
+  .mh-bauxite { border-color: var(--bauxite);   background: rgba(234,88,12,0.08); }
+  .mh-chrom   { border-color: var(--chromium);  background: rgba(124,58,237,0.08); }
+  .mh-copper  { border-color: var(--copper);    background: rgba(37,99,235,0.08); }
+  .mh-mangan  { border-color: var(--manganese); background: rgba(101,163,13,0.08); }
+  .mh-zinc    { border-color: var(--zinc);      background: rgba(8,145,178,0.08); }
+  .mh-titan   { border-color: var(--titanium);  background: rgba(71,85,105,0.08); }
+  .mh-nickel  { border-color: var(--nickel);    background: rgba(22,163,74,0.08); }
+
+  .mh-iron-text    { color: var(--iron); }
+  .mh-bauxite-text { color: var(--bauxite); }
+  .mh-chrom-text   { color: var(--chromium); }
+  .mh-copper-text  { color: var(--copper); }
+  .mh-mangan-text  { color: var(--manganese); }
+  .mh-zinc-text    { color: var(--zinc); }
+  .mh-titan-text   { color: var(--titanium); }
+  .mh-nickel-text  { color: var(--nickel); }
+
+  .footer {
+    margin-top: 28px;
+    padding: 16px 20px;
+    background: rgba(184,134,11,0.06);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-icon { font-size: 28px; }
+
+  .footer-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .footer-text p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.6;
+  }
+
+  .footer-text span {
+    color: var(--text);
+    opacity: 0.8;
+  }
+
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    padding: 12px 0 4px;
+    border-top: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  /* Highlight LMEL column */
+  .lmel-col {
+    position: relative;
+    background: rgba(184,134,11,0.04) !important;
+    border-left: 1px solid rgba(184,134,11,0.25) !important;
+    border-right: 1px solid rgba(184,134,11,0.25) !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Global Metal Mining</h1>
+  <p>Comparison Matrix · By Annual Tonnage, Complexity & Supply Chain</p>
+</div>
+
+<div class="wrapper">
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-iron">🔴</div>
+          <div class="metal-name mh-iron-text">Iron Ore</div>
+          <div class="metal-vol">~2,600 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-bauxite">🟠</div>
+          <div class="metal-name mh-bauxite-text">Bauxite</div>
+          <div class="metal-vol">~400 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-chrom">⚙️</div>
+          <div class="metal-name mh-chrom-text">Chromium</div>
+          <div class="metal-vol">~41 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-copper">🔵</div>
+          <div class="metal-name mh-copper-text">Copper</div>
+          <div class="metal-vol">~22 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-mangan">🟤</div>
+          <div class="metal-name mh-mangan-text">Manganese</div>
+          <div class="metal-vol">~20 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-zinc">⚫</div>
+          <div class="metal-name mh-zinc-text">Zinc/Lead</div>
+          <div class="metal-vol">~17.5 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-titan">⬜</div>
+          <div class="metal-name mh-titan-text">Titanium</div>
+          <div class="metal-vol">~9.5 MTPA</div>
+        </div>
+      </th>
+      <th>
+        <div class="metal-header">
+          <div class="metal-icon mh-nickel">🟢</div>
+          <div class="metal-name mh-nickel-text">Nickel</div>
+          <div class="metal-vol">~3.5 MTPA</div>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td>Mining Depth</td>
+      <td class="lmel-col"><div class="depth">Shallow<br>Open-Pit</div></td>
+      <td><div class="depth">Very Shallow<br>Strip</div></td>
+      <td><div class="depth">Mixed<br>Pit + U/G</div></td>
+      <td><div class="depth">Deep<br>Pit + U/G</div></td>
+      <td><div class="depth">Pit +<br>Shallow U/G</div></td>
+      <td><div class="depth">Mostly<br>Deep U/G</div></td>
+      <td><div class="depth">Surface<br>Sand Dredge</div></td>
+      <td><div class="depth">Surface &<br>Deep U/G</div></td>
+    </tr>
+
+    <tr>
+      <td>Complexity</td>
+      <td class="lmel-col"><span class="pill pill-low">⭐ Low</span></td>
+      <td><span class="pill pill-vlow">✅ Very Low</span></td>
+      <td><span class="pill pill-mod">⚡ Moderate</span></td>
+      <td><span class="pill pill-high">🔴 High</span></td>
+      <td><span class="pill pill-low">⭐ Low–Mod</span></td>
+      <td><span class="pill pill-modhi">🟠 Mod–High</span></td>
+      <td><span class="pill pill-low">⭐ Low</span></td>
+      <td><span class="pill pill-high">🔴 High</span></td>
+    </tr>
+
+    <tr>
+      <td>Greenfield<br>Gestation</td>
+      <td class="lmel-col"><span class="pill pill-med">5–10 yrs</span></td>
+      <td><span class="pill pill-fast">3–7 yrs</span></td>
+      <td><span class="pill pill-med">5–10 yrs</span></td>
+      <td><span class="pill pill-slow">12–15+ yrs</span></td>
+      <td><span class="pill pill-med">5–8 yrs</span></td>
+      <td><span class="pill pill-slow">8–12 yrs</span></td>
+      <td><span class="pill pill-fast">3–6 yrs</span></td>
+      <td><span class="pill pill-slow">8–12+ yrs</span></td>
+    </tr>
+
+    <tr>
+      <td>Brownfield<br>Expansion</td>
+      <td class="lmel-col"><span class="pill pill-fast">2–4 yrs</span></td>
+      <td><span class="pill pill-fast">1–3 yrs</span></td>
+      <td><span class="pill pill-med">2–5 yrs</span></td>
+      <td><span class="pill pill-slow">4–8 yrs</span></td>
+      <td><span class="pill pill-fast">2–4 yrs</span></td>
+      <td><span class="pill pill-med">3–6 yrs</span></td>
+      <td><span class="pill pill-fast">1–3 yrs</span></td>
+      <td><span class="pill pill-med">4–7 yrs</span></td>
+    </tr>
+
+    <tr>
+      <td>Top Producers</td>
+      <td class="lmel-col"><div class="countries">🇦🇺 Australia<br>🇧🇷 Brazil<br>🇨🇳 China</div></td>
+      <td><div class="countries">🇦🇺 Australia<br>🇬🇳 Guinea<br>🇨🇳 China</div></td>
+      <td><div class="countries">🇿🇦 S.Africa<br>🇹🇷 Turkey<br>🇰🇿 Kazakhstan</div></td>
+      <td><div class="countries">🇨🇱 Chile<br>🇵🇪 Peru<br>🇨🇩 DRC</div></td>
+      <td><div class="countries">🇿🇦 S.Africa<br>🇬🇦 Gabon<br>🇦🇺 Australia</div></td>
+      <td><div class="countries">🇨🇳 China<br>🇵🇪 Peru<br>🇦🇺 Australia</div></td>
+      <td><div class="countries">🇨🇳 China<br>🇲🇿 Mozambique<br>🇿🇦 S.Africa</div></td>
+      <td><div class="countries">🇮🇩 Indonesia<br>🇵🇭 Philippines<br>🇷🇺 Russia</div></td>
+    </tr>
+
+    <tr>
+      <td>Primary Use</td>
+      <td class="lmel-col"><div class="depth">Steel for infra,<br>construction,<br>manufacturing</div></td>
+      <td><div class="depth">Aluminium for<br>aerospace,<br>autos</div></td>
+      <td><div class="depth">Stainless<br>steel, adds<br>hardness</div></td>
+      <td><div class="depth">Wiring, EVs,<br>power grids,<br>electronics</div></td>
+      <td><div class="depth">Steel alloying,<br>EV batteries</div></td>
+      <td><div class="depth">Galvanizing<br>steel to<br>prevent rust</div></td>
+      <td><div class="depth">TiO₂ white<br>pigment, paint,<br>aerospace</div></td>
+      <td><div class="depth">Stainless steel,<br>lithium-ion<br>batteries</div></td>
+    </tr>
+
+    <tr>
+      <td>Top 3 End-User<br>Industries</td>
+      <td class="lmel-col"><div class="depth">🏗️ Construction<br>🚗 Auto<br>🚢 Shipbuilding</div></td>
+      <td><div class="depth">✈️ Aerospace<br>🚗 Automotive<br>🏗️ Construction</div></td>
+      <td><div class="depth">🔩 Stainless Steel<br>⚙️ Engineering<br>🔋 Superalloys</div></td>
+      <td><div class="depth">⚡ Electrical<br>🚗 EV & Auto<br>🏗️ Construction</div></td>
+      <td><div class="depth">🏭 Steel Making<br>🔋 EV Batteries<br>🧪 Chemicals</div></td>
+      <td><div class="depth">🏗️ Construction<br>🚗 Auto<br>🔋 Batteries</div></td>
+      <td><div class="depth">🎨 Paints/Coatings<br>✈️ Aerospace<br>🏥 Medical</div></td>
+      <td><div class="depth">🔩 Stainless Steel<br>🔋 EV Batteries<br>⚙️ Electronics</div></td>
+    </tr>
+
+    <tr>
+      <td>Key Risk</td>
+      <td class="lmel-col"><div class="depth">China steel<br>demand<br>exposure</div></td>
+      <td><div class="depth">Guinea supply<br>concentration</div></td>
+      <td><div class="depth">S.Africa near<br>monopoly<br>risk</div></td>
+      <td><div class="depth">Long project<br>timelines,<br>grade decline</div></td>
+      <td><div class="depth">Africa supply<br>bottleneck</div></td>
+      <td><div class="depth">China smelting<br>dominance</div></td>
+      <td><div class="depth">Africa supply<br>expansion<br>pace</div></td>
+      <td><div class="depth">Indonesia<br>market<br>disruption</div></td>
+    </tr>
+
+    <tr>
+      <td>LMEL Link</td>
+      <td class="lmel-col"><span class="lmel-badge">📍 PRIMARY</span></td>
+      <td><span class="dash">—</span></td>
+      <td><span class="dash">—</span></td>
+      <td><span class="dash">—</span></td>
+      <td><span class="dash">—</span></td>
+      <td><span class="dash">—</span></td>
+      <td><span class="dash">—</span></td>
+      <td><span class="dash">—</span></td>
+    </tr>
+
+  </tbody>
+</table>
+</div>
+
+<div class="footer">
+  <div class="footer-icon">📍</div>
+  <div class="footer-text">
+    <h3>LMEL Advantage — Lloyds Metals & Energy Ltd</h3>
+    <p>
+      <span>Surjagarh, Gadchiroli, Maharashtra</span> ·
+      Iron Ore = Lowest mining complexity of all major metals ·
+      Brownfield expansion in just <span>2–4 years</span> ·
+      Fully integrated: <span>Captive Mine → Sponge Iron → Steel</span>
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
